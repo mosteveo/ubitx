@@ -1,4 +1,9 @@
-
+/*
+ * 
+ * Display mod - heavily modified - compiles
+ * 
+ * 
+ * /
  /** Menus
  *  The Radio menus are accessed by tapping on the function button. 
  *  - The main loop() constantly looks for a button press and calls doMenu() when it detects
@@ -1504,6 +1509,28 @@ void doMenu(){
       default :
         menuExit(btnState);  break;
     }
+    /*
+    else if (select < 130 && modeCalibrate)
+      menuSetupCalibration(btnState);   //crystal
+    else if (select < 140 && modeCalibrate)
+      menuSetupCarrier(btnState);       //lsb
+    else if (select < 150 && modeCalibrate)
+      menuSetupCWCarrier(btnState);       //lsb
+    else if (select < 160 && modeCalibrate)
+      menuSetupCwTone(btnState);
+    else if (select < 170 && modeCalibrate)
+      menuSetupCwDelay(btnState);
+    else if (select < 180 && modeCalibrate)
+      menuSetupTXCWInterval(btnState);
+    else if (select < 190 && modeCalibrate)
+      menuSetupKeyType(btnState);
+    else if (select < 200 && modeCalibrate)
+      menuADCMonitor(btnState);
+    else if (select < 210 && modeCalibrate)
+      menuTxOnOff(btnState, 0x01);      //TX OFF / ON
+    else if (select < 220 && modeCalibrate)
+      menuExit(btnState);
+    */
 
     Check_Cat(0);  //To prevent disconnections
   }

@@ -1,3 +1,7 @@
+/*
+ * Updated display, compiles
+ * 
+ */
 
 /**
  Since KD8CEC Version 0.29, most of the original code is no longer available.
@@ -39,7 +43,12 @@
  */
 #include <Wire.h>
 #include <EEPROM.h>
+#include <Time.h> // Mod_menu: added - timekeeoing
+#include <TimeAlarms.h> // Mod_menu: added - time scheduling
+#include "TinyGPS++.h" // Mod_menu: added - GPS support
 #include "ubitx.h"
+
+TinyGPSPlus gps; // Mod_menu: TinyGPS++ instantiation
 
 /**
     The main chip which generates upto three oscillators of various frequencies in the
@@ -387,7 +396,7 @@ boolean modeCalibrate = false;//this mode of menus shows extended menus to calib
 
 unsigned long beforeIdle_ProcessTime = 0; //for check Idle time
 byte line2DisplayStatus = 0;  //0:Clear, 1 : menu, 1: DisplayFrom Idle, 
-char lcdMeter[21]; 
+char lcdMeter[17]; //TODO change to 21?
 
 byte isIFShift = 0;     //1 = ifShift, 2 extend
 int ifShiftValue = 0;  //
@@ -1189,7 +1198,9 @@ void setup()
   */
   
   //Serial.begin(9600);
-  //lcd.begin(16, 2);
+  //lcd.begin(16, 2);  // 4bit 16x2 display
+
+  Serial1.begin(9600); // Mod_Menu: start serial support for GPS on teensy serial port #1
 
   // activate LCD module
   lcd.begin (20,4, LCD_5x8DOTS); // for 16 x 2 LCD module
@@ -1278,7 +1289,6 @@ void loop(){
         doRIT();
       else 
         doTuningWithThresHold();
-        // DisplayMeter(0, 25, 0);  // draw meter to 4th line of LCD
     }
     
 /*

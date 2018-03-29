@@ -1,4 +1,7 @@
-
+/*
+ * Updated display, compiles
+ * 
+ */
 /*************************************************************************
   KD8CEC's CAT Library for uBITX and HAM
   This source code is written for uBITX, but it can also be used on other radios.

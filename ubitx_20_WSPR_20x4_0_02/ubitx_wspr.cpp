@@ -157,7 +157,7 @@ void SendWSPRManage()
       
       if (digitalRead(PTT) == 0)
       {
-        printLineF1(F("Transmitting"));
+        //printLineF1(F("Transmitting"));
         //SEND WSPR
         //If you need to consider the Rit and Sprite modes, uncomment them below.
         //remark = To reduce the size of the program

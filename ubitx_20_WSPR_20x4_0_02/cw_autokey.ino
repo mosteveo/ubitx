@@ -1,3 +1,8 @@
+/*
+ * Updated display, compiles
+ * 
+ */
+
 
 /*************************************************************************
   KD8CEC's Memory Keyer for HAM

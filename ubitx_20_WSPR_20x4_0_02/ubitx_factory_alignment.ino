@@ -1,3 +1,8 @@
+/*
+ * Modified display - compiles
+ * 
+ */
+
 
 /**
  * This procedure is only for those who have a signal generator/transceiver tuned to exactly 7.150 and a dummy load 

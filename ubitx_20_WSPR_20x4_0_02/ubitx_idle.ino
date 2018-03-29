@@ -1,9 +1,10 @@
 /*
- * 
- * Disabled for now, needs modification to work with 20x4 LCD
+ * Display mod- nothing changed yet
  * 
  * 
  */
+
+
 /*************************************************************************
   KD8CEC's uBITX Idle time Processing
   Functions that run at times that do not affect TX, CW, and CAT
@@ -155,7 +156,7 @@ void updateLine2Buffer(char isDirectCall)
     //}
     
     if (isDirectCall == 1)  //if call by encoder (not scheduler), immediate print value
-        printLine(3, line2Buffer);
+        printLine2(line2Buffer);    //TODO
   }       // end of display IF
   else    // step display
   {
@@ -217,9 +218,9 @@ void DisplayMeter(byte meterType, byte meterValue, char drawPosition)
   if (meterType == 0 || meterType == 1 || meterType == 2)
   {
     drawMeter(meterValue);  //call original source code
-    int lineNumber = 3;
+    int lineNumber = 0;
     if ((displayOption1 & 0x01) == 0x01)
-      lineNumber = 3;
+      lineNumber = 1;
     
     lcd.setCursor(drawPosition, lineNumber);
   

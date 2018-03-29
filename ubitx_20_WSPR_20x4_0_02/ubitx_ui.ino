@@ -1,3 +1,8 @@
+/*
+ * 
+ * Display mod - heavily modified, compiles
+ * 
+ */
 
 /**
  * The user interface of the ubitx consists of the encoder, the push-button on top of it
@@ -106,6 +111,28 @@ void drawMeter(int needle) {
     lcdMeter[5] = 0x20;
 }
 
+/*
+void drawMeter(int8_t needle){
+  int16_t best, i, s;
+
+  if (needle < 0)
+    return;
+
+  s = (needle * 4)/10;
+  for (i = 0; i < 8; i++){
+    if (s >= 5)
+      lcdMeter[i] = 1;
+    else if (s >= 0)
+      lcdMeter[i] = 2 + s;
+    else
+      lcdMeter[i] = 1;
+    s = s - 5;
+  }
+  if (needle >= 40)
+    lcdMeter[i-1] = 6;
+  lcdMeter[i] = 0;
+}
+*/
 // The generic routine to display one line on the LCD 
 void printLine(unsigned char linenmbr, const char *c) {
   //if ((displayOption1 & 0x01) == 0x01)

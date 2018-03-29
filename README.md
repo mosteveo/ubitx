@@ -7,6 +7,8 @@ Major changes from KD8CEC's code include swapping out the tired and slow Arduino
 a Teensy 3.5. This allows further expansion and vastly less memory restraints. Other changes include moving from a 4bit 2x16 LCD display to a 4x20 I2C LCD display. The screen saver (idle time) was disabled for now.
 
 
+In progress: GPS, serial and manual time setting support
+
 
 Planned expansions include SD card support (channels?, messaging?), GPS support (automatic QTH and time keeping (for WSPR etc..), SWR meter, antenna tuner, etc... fell free to add to the code with the expanded memory. 
 
