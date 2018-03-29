@@ -1,3 +1,4 @@
+
 /**
  * The user interface of the ubitx consists of the encoder, the push-button on top of it
  * and the 16x2 LCD display.
@@ -5,8 +6,8 @@
  * of the radio. Occasionally, it is used to provide a two-line information that is 
  * quickly cleared up.
  */
-//#define printLineF1(x) (printLineF(1, x))
-//#define printLineF2(x) (printLineF(0, x))
+
+
 
 //returns true if the button is pressed
 int btnDown(void){
@@ -15,27 +16,6 @@ int btnDown(void){
   else
     return 1;
 }
-
-/**
- * Meter (not used in this build for anything)
- * the meter is drawn using special characters. Each character is composed of 5 x 8 matrix.
- * The  s_meter array holds the definition of the these characters. 
- * each line of the array is is one character such that 5 bits of every byte 
- * makes up one line of pixels of the that character (only 5 bits are used)
- * The current reading of the meter is assembled in the string called meter
- */
-
-
-/*
-const PROGMEM uint8_t s_meter_bitmap[] = {
-  B00000,B00000,B00000,B00000,B00000,B00100,B00100,B11011,
-  B10000,B10000,B10000,B10000,B10100,B10100,B10100,B11011,
-  B01000,B01000,B01000,B01000,B01100,B01100,B01100,B11011,
-  B00100,B00100,B00100,B00100,B00100,B00100,B00100,B11011,
-  B00010,B00010,B00010,B00010,B00110,B00110,B00110,B11011,
-  B00001,B00001,B00001,B00001,B00101,B00101,B00101,B11011
-};
-*/
 
 const PROGMEM uint8_t meters_bitmap[] = {
   B10000,  B10000,  B10000,  B10000,  B10000,  B10000,  B10000,  B10000 ,   //custom 1
@@ -93,6 +73,14 @@ void initMeter(){
   for (i = 0; i < 8; i++)
     tmpbytes[i] = pgm_read_byte(p_metes_bitmap + i + 40);
   lcd.createChar(6, tmpbytes);
+  
+  lcd.createChar(7, rxchar);
+    
+  lcd.createChar(8, txchar);
+
+  lcd.createChar(9, NoTX1);
+
+  lcd.createChar(10, NoTX2);
 }
 
 //by KD8CEC
@@ -118,39 +106,17 @@ void drawMeter(int needle) {
     lcdMeter[5] = 0x20;
 }
 
-/*
-void drawMeter(int8_t needle){
-  int16_t best, i, s;
-
-  if (needle < 0)
-    return;
-
-  s = (needle * 4)/10;
-  for (i = 0; i < 8; i++){
-    if (s >= 5)
-      lcdMeter[i] = 1;
-    else if (s >= 0)
-      lcdMeter[i] = 2 + s;
-    else
-      lcdMeter[i] = 1;
-    s = s - 5;
-  }
-  if (needle >= 40)
-    lcdMeter[i-1] = 6;
-  lcdMeter[i] = 0;
-}
-*/
 // The generic routine to display one line on the LCD 
 void printLine(unsigned char linenmbr, const char *c) {
-  if ((displayOption1 & 0x01) == 0x01)
-    linenmbr = (linenmbr == 0 ? 1 : 0); //Line Toggle
+  //if ((displayOption1 & 0x01) == 0x01)
+  //  linenmbr = (linenmbr == 0 ? 1 : 0); //Line Toggle
     
   if (strcmp(c, printBuff[linenmbr])) {     // only refresh the display when there was a change
     lcd.setCursor(0, linenmbr);             // place the cursor at the beginning of the selected line
     lcd.print(c);
     strcpy(printBuff[linenmbr], c);
 
-    for (byte i = strlen(c); i < 16; i++) { // add white spaces until the end of the 16 characters line is reached
+    for (byte i = strlen(c); i < 20; i++) { // add white spaces until the end of the 16 characters line is reached
       lcd.print(' ');
     }
   }
@@ -159,10 +125,10 @@ void printLine(unsigned char linenmbr, const char *c) {
 void printLineF(char linenmbr, const __FlashStringHelper *c)
 {
   int i;
-  char tmpBuff[17];
+  char tmpBuff[21];
   PGM_P p = reinterpret_cast<PGM_P>(c);  
 
-  for (i = 0; i < 17; i++){
+  for (i = 0; i < 21; i++){
     unsigned char fChar = pgm_read_byte(p++);
     tmpBuff[i] = fChar;
     if (fChar == 0)
@@ -172,7 +138,7 @@ void printLineF(char linenmbr, const __FlashStringHelper *c)
   printLine(linenmbr, tmpBuff);
 }
 
-#define LCD_MAX_COLUMN 16
+#define LCD_MAX_COLUMN 20
 void printLineFromEEPRom(char linenmbr, char lcdColumn, byte eepromStartIndex, byte eepromEndIndex, char offsetTtype) {
   if ((displayOption1 & 0x01) == 0x01)
     linenmbr = (linenmbr == 0 ? 1 : 0); //Line Toggle
@@ -187,7 +153,7 @@ void printLineFromEEPRom(char linenmbr, char lcdColumn, byte eepromStartIndex, b
       break;
   }
   
-  for (byte i = lcdColumn; i < 16; i++) //Right Padding by Space
+  for (byte i = lcdColumn; i < 20; i++) //Right Padding by Space
       lcd.write(' ');
 }
 
@@ -198,6 +164,14 @@ void printLine1(const char *c){
 //  short cut to print to the first line
 void printLine2(const char *c){
   printLine(0,c);
+}
+//  short cut to print to the first line
+void printLine3(const char *c){
+  printLine(2,c);
+}
+//  short cut to print to the first line
+void printLine4(const char *c){
+  printLine(3,c);
 }
 
 void clearLine2()
@@ -231,6 +205,20 @@ char byteToChar(byte srcByte){
 
 // this builds up the top line of the display with frequency and mode
 void updateDisplay() {
+
+byte rxchar[] = { // rx character on main screen
+  B01100,
+  B01010,
+  B01100,
+  B01010,
+  B00000,
+  B01010,
+  B00100,
+  B01010
+};
+
+lcd.createChar(5, rxchar);
+  
   // tks Jack Purdum W8TEE
   // replaced fsprint commmands by str commands for code size reduction
   // replace code for Frequency numbering error (alignment, point...) by KD8CEC
@@ -240,6 +228,8 @@ void updateDisplay() {
   memset(c, 0, sizeof(c));
 
   if (inTx){
+ 
+    /*
     if (isCWAutoMode == 2) {
       for (i = 0; i < 4; i++)
         c[3-i] = (i < autoCWSendReservCount ? byteToChar(autoCWSendReserv[i]) : ' ');
@@ -249,38 +239,96 @@ void updateDisplay() {
       c[5] = '=';
     }
     else {
-      if (cwTimeout > 0)
-        strcpy(c, "   CW:");
-      else
-        strcpy(c, "   TX:");
+    */
+    
+    if (cwTimeout > 0)
+        strcpy(c, " CW |");
+    if (isUSB)
+        strcpy(c, "USB |");
+    else
+        strcpy(c, "LSB |");
+
+    if (vfoActive == VFO_A) // VFO A is active
+      strcat(c, " A |");
+    else
+      strcat(c, " B |");
     }
-  }
-  else {
+//  }
+  else { // if in Rx
     if (ritOn)
-      strcpy(c, "RIT ");
+      strcpy(c, "RIT |");
     else {
       if (cwMode == 0)
       {
         if (isUSB)
-          strcpy(c, "USB ");
+          strcpy(c, "USB |");
         else
-          strcpy(c, "LSB ");
-      }
+          strcpy(c, "LSB |");
+
+      /*
       else if (cwMode == 1)
       {
-          strcpy(c, "CWL ");
+          strcpy(c, "CWL |");
       }
       else
       {
-          strcpy(c, "CWU ");
+          strcpy(c, "CWU |");
       }
+      */
+      } 
     }
     if (vfoActive == VFO_A) // VFO A is active
-      strcat(c, "A:");
+      strcat(c, " A |");
     else
-      strcat(c, "B:");
+      strcat(c, " B |");
   }
 
+/*************
+ * This section displays band names, this is set up for Australian Advanced allocations and can easily be changed
+ * to suit your own allocations. It also shows a warning when outside the bands but does not inhibit TX,
+ * This is only a warning to remind you of band edges at a glance.
+ * It is  up to you as a licensed amateur to ensure you only transmit where you are allowed to do so.
+ * 2200m - 160m also have this warning because the radio isn't designed to be able to tx there.
+ * (rx is also poor there)
+ */
+  if (frequency >= 135700 && frequency <= 137800){
+      strcat(c, "2200m \x03\x04");
+    }else if (frequency >= 472000 && frequency <= 479000){
+      strcat(c, "630 m \x03\x04");
+    }else if (frequency >= 535000 && frequency <= 1715000){
+      strcat(c, "MW AM \x03\x04");
+    }else if (frequency >= 1800000 && frequency <= 1875000){
+      strcat(c, "160 m \x03\x04");
+    }else if (frequency >= 3500000 && frequency <= 3700000){
+      strcat(c, "  80 m  ");
+    } else if (frequency >= 3776000 && frequency <= 3800000){
+      strcat(c, "80 m DXw");
+    } else if (frequency >= 7000000 && frequency <= 7300000){
+      strcat(c, "  40 m  ");
+    } else if (frequency >= 10100000 && frequency <= 10150000){
+      strcat(c, "  30 m  ");
+    } else if (frequency >= 14000000 && frequency <= 14350000){
+      strcat(c, "  20 m  ");
+    } else if (frequency >= 18068000 && frequency <= 18168000){
+      strcat(c, "  17 m  ");
+    } else if (frequency >= 21000000 && frequency <= 21450000){
+      strcat(c, "  15 m  ");
+    } else if (frequency >= 24890000 && frequency <= 24990000){
+      strcat(c, "  12 m  ");
+    } else if (frequency >= 28000000 && frequency <= 29700000){
+      strcat(c, "  10 m  ");
+    } else {
+      strcat(c, "OOB: \x09\x10\!");
+  }
+      
+  if (inTx)
+    {strcat(c, "| \xF8");}
+
+   else
+    {strcat(c, "|\xF8\ ");}
+
+
+  /*
   //Fixed by Mitani Massaru (JE4SMQ)
   if (isShiftDisplayCWFreq == 1)
   {
@@ -289,11 +337,17 @@ void updateDisplay() {
     else if (cwMode == 2)   //CWU
         tmpFreq = tmpFreq + sideTone + shiftDisplayAdjustVal;
   }
-
+  */
+  
+  printLine(0, "Mode|VFO|  Band  |\x07\x08");  // prints top line of LCD on home screen
+  printLine(1, c);
+  
+  memset(c, 0, sizeof(c));
+  strcpy(c, "  Freq: ");
   //display frequency
-  for (int i = 15; i >= 6; i--) {
+  for (int i = 17; i >= 8; i--) {
     if (tmpFreq > 0) {
-      if (i == 12 || i == 8) c[i] = '.';
+      if (i == 14 || i == 10) c[i] = '.';
       else {
         c[i] = tmpFreq % 10 + 0x30;
         tmpFreq /= 10;
@@ -302,32 +356,27 @@ void updateDisplay() {
     else
       c[i] = ' ';
   }
+  printLine(2, c);
 
-  //remarked by KD8CEC
-  //already RX/TX status display, and over index (16 x 2 LCD)
-  //if (inTx)
-  //  strcat(c, " TX");
-  printLine(1, c);
-
-  byte diplayVFOLine = 1;
-  if ((displayOption1 & 0x01) == 0x01)
-    diplayVFOLine = 0;
-
-  if ((vfoActive == VFO_A && ((isDialLock & 0x01) == 0x01)) ||
-    (vfoActive == VFO_B && ((isDialLock & 0x02) == 0x02))) {
-    lcd.setCursor(5,diplayVFOLine);
+    if (isDialLock == 1) {
+    lcd.setCursor(6,2);
     lcd.write((uint8_t)0);
   }
   else if (isCWAutoMode == 2){
-    lcd.setCursor(5,diplayVFOLine);
+    lcd.setCursor(6,2);
     lcd.write(0x7E);
   }
   else
   {
-    lcd.setCursor(5,diplayVFOLine);
+    lcd.setCursor(6,2);
     lcd.write(":");
   }
+  
+  printLine(3, "KD2NDR");
+  lcd.setCursor(15,3);
+  lcd.write("uBitx");
 }
+
 
 int enc_prev_state = 3;
 

@@ -1,3 +1,4 @@
+
 /**
  Since KD8CEC Version 0.29, most of the original code is no longer available.
  Most features(TX, Frequency Range, Ham Band, TX Control, CW delay, start Delay... more) have been added by KD8CEC.
@@ -100,9 +101,15 @@
  * Lines used are : RESET, ENABLE, D4, D5, D6, D7 
  * We include the library and declare the configuration of the LCD panel too
  */
-
+/*
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8,9,10,11,12,13);
+*/
+
+#include <LCD.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C  lcd(0x27,2,1,0,4,5,6,7); // 0x27 is the I2C bus address for an unmodified backpack
+
 
 #define VERSION_NUM 0x01  //for KD8CEC'S firmware and for memory management software
 
@@ -117,9 +124,54 @@ LiquidCrystal lcd(8,9,10,11,12,13);
  * the input and output from the USB port. We must keep a count of the bytes used while reading
  * the serial port as we can easily run out of buffer space. This is done in the serial_in_count variable.
  */
-char c[30], b[30];      
-char printBuff[2][17];  //mirrors what is showing on the two lines of the display
+char c[30], b[30];  
+char printBuff[4][21];  //mirrors what is showing on the two lines of the display    
+//char printBuff[2][17];  //mirrors what is showing on the two lines of the display
 int count = 0;          //to generally count ticks, loops, etc
+
+byte rxchar[] = { // rx character on main screen
+  B01100,
+  B01010,
+  B01100,
+  B01010,
+  B00000,
+  B01010,
+  B00100,
+  B01010
+};
+
+byte txchar[] = { // tx character on main screen
+  B01110,
+  B00100,
+  B00100,
+  B00100,
+  B00000,
+  B01010,
+  B00100,
+  B01010
+};
+
+byte NoTX1[] = {
+  B01001,
+  B01101,
+  B01011,
+  B01001,
+  B00000,
+  B00111,
+  B00010,
+  B00010
+};
+
+byte NoTX2[] = {
+  B01100,
+  B10010,
+  B10010,
+  B01100,
+  B00000,
+  B10100,
+  B01000,
+  B10100
+};
 
 /** 
  *  The second set of 16 pins on the Raduino's bottom connector are have the three clock outputs and the digital lines to control the rig.
@@ -335,7 +387,7 @@ boolean modeCalibrate = false;//this mode of menus shows extended menus to calib
 
 unsigned long beforeIdle_ProcessTime = 0; //for check Idle time
 byte line2DisplayStatus = 0;  //0:Clear, 1 : menu, 1: DisplayFrom Idle, 
-char lcdMeter[17];
+char lcdMeter[21]; 
 
 byte isIFShift = 0;     //1 = ifShift, 2 extend
 int ifShiftValue = 0;  //
@@ -1137,10 +1189,29 @@ void setup()
   */
   
   //Serial.begin(9600);
-  lcd.begin(16, 2);
-  printLineF(1, F("CE v1.061")); 
+  //lcd.begin(16, 2);
 
-  Init_Cat(38400, SERIAL_8N1);
+  // activate LCD module
+  lcd.begin (20,4, LCD_5x8DOTS); // for 16 x 2 LCD module
+  lcd.setBacklightPin(3,POSITIVE);
+  lcd.setBacklight(HIGH);
+
+  lcd.createChar(1, rxchar);
+  lcd.createChar(2, txchar);
+  lcd.createChar(3, NoTX1);
+  lcd.createChar(4, NoTX2);
+  
+  //printLineF(1, F("CE v1.061")); 
+    printLine(0, "uBitx Teensy v0.01"); 
+    printLine(1, "Multimode");
+    printLine(2, "80-10m Transceiver");
+    printLine(3, "");
+    delay_background(500, 0);
+    delay(1000);
+  
+
+  //Init_Cat(38400, SERIAL_8N1); 
+  Init_Cat();
   initMeter(); //not used in this build
   initSettings();
 
@@ -1148,11 +1219,6 @@ void setup()
     userCallsignLength = userCallsignLength & 0x7F;
     printLineFromEEPRom(0, 0, 0, userCallsignLength -1, 0); //eeprom to lcd use offset (USER_CALLSIGN_DAT)
     delay(500);
-  }
-  else {
-    printLineF(0, F("uBITX v0.20")); 
-    delay(500);
-    clearLine2();
   }
   
   initPorts();     
@@ -1212,13 +1278,17 @@ void loop(){
         doRIT();
       else 
         doTuningWithThresHold();
+        // DisplayMeter(0, 25, 0);  // draw meter to 4th line of LCD
     }
-
+    
+/*
     if (isCWAutoMode == 0 && beforeIdle_ProcessTime < millis() - 250) {
       idle_process();
       checkAutoSaveFreqMode();  //move here form out scope for reduce cpu use rate
       beforeIdle_ProcessTime = millis();
     }
+    */
+    
   } //end of check TX Status
 
   //we check CAT after the encoder as it might put the radio into TX

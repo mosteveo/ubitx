@@ -1,3 +1,4 @@
+
 /*************************************************************************
   KD8CEC's CAT Library for uBITX and HAM
   This source code is written for uBITX, but it can also be used on other radios.
@@ -510,7 +511,7 @@ void WriteEEPRom_FT817(byte fromType)
         printLineF2(F("Sidetone set! CAT"));
         EEPROM.put(CW_SIDETONE, sideTone);
         delay(300);                       //If timeout errors occur in the calling software, remove them
-        clearLine2();
+        printLine2("");
       }
       break;
 
@@ -522,7 +523,7 @@ void WriteEEPRom_FT817(byte fromType)
         printLineF2(F("Sidetone set! CAT"));
         EEPROM.put(CW_SIDETONE, sideTone);
         delay(300);                   //If timeout errors occur in the calling software, remove them
-        clearLine2();
+        printLine2("");
         line2DisplayStatus = 0;
       }
       break;
@@ -543,7 +544,7 @@ void WriteEEPRom_FT817(byte fromType)
       printLineF2(F("CW Speed set!"));
       EEPROM.put(CW_DELAY, cwDelayTime);
       delay(300);
-      clearLine2();
+      printLine2("");
       break;
     case 0x62 : //
       //5-0  CW Speed (4-60 WPM) (#21) From 0 to 38 (HEX) with 0 = 4 WPM and 38 = 60 WPM (1 WPM steps)
@@ -552,7 +553,7 @@ void WriteEEPRom_FT817(byte fromType)
       printLineF2(F("CW Speed set!"));
       EEPROM.put(CW_SPEED, cwSpeed);
       delay(300);
-      clearLine2();
+      printLine2("");
 
       break;
       /*
@@ -787,9 +788,11 @@ void Check_Cat(byte fromType)
   isProcessCheck_Cat = 0;
 }
 
-void Init_Cat(long baud, int portConfig)
+//void Init_Cat(long baud, int portConfig)
+void Init_Cat()
 {
-  Serial.begin(baud, portConfig);
+  //Serial.begin(baud, portConfig);
+  Serial.begin(38400);
   Serial.flush();
 }
 

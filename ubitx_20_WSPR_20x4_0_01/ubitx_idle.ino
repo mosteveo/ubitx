@@ -1,3 +1,9 @@
+/*
+ * 
+ * Disabled for now, needs modification to work with 20x4 LCD
+ * 
+ * 
+ */
 /*************************************************************************
   KD8CEC's uBITX Idle time Processing
   Functions that run at times that do not affect TX, CW, and CAT
@@ -149,7 +155,7 @@ void updateLine2Buffer(char isDirectCall)
     //}
     
     if (isDirectCall == 1)  //if call by encoder (not scheduler), immediate print value
-        printLine2(line2Buffer);    
+        printLine(3, line2Buffer);
   }       // end of display IF
   else    // step display
   {
@@ -211,9 +217,9 @@ void DisplayMeter(byte meterType, byte meterValue, char drawPosition)
   if (meterType == 0 || meterType == 1 || meterType == 2)
   {
     drawMeter(meterValue);  //call original source code
-    int lineNumber = 0;
+    int lineNumber = 3;
     if ((displayOption1 & 0x01) == 0x01)
-      lineNumber = 1;
+      lineNumber = 3;
     
     lcd.setCursor(drawPosition, lineNumber);
   
@@ -237,7 +243,7 @@ void idle_process()
       if (checkCount++ > 1)
       {
         updateLine2Buffer(0); //call by scheduler
-        printLine2(line2Buffer);
+        printLine2(line2Buffer); //TODO
         line2DisplayStatus = 2;
         checkCount = 0;
       }

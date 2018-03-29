@@ -1,3 +1,10 @@
+/*
+ * 
+ * printLine below will not work when modified, if ubitc_wspr.cpp is changed to ino file name
+ * another different process breaks
+ * 
+ */
+
 /**********************************************************************************
 WSPR SENDER for uBITX  by KD8CEC
 Some of the code that sends WSPR referenced the code in G3ZIL.
@@ -75,7 +82,7 @@ void SendWSPRManage()
 
     if (nowWsprStep == 0) //select Message status
     {
-      printLineF2(F("WSPR:"));
+      printLineF2(F("WSPR:")); // TODO
       
       if (selectedWsprMessageIndex != nowSelectedIndex)
       {
@@ -145,11 +152,12 @@ void SendWSPRManage()
         strcpy(c, "PTT->");
 
       strcat(c, b);
-      printLine1(c);
+      printLine1(c);  // TODO
+      //printLine(2, c);
       
       if (digitalRead(PTT) == 0)
       {
-        //printLineF1(F("Transmitting"));
+        printLineF1(F("Transmitting"));
         //SEND WSPR
         //If you need to consider the Rit and Sprite modes, uncomment them below.
         //remark = To reduce the size of the program

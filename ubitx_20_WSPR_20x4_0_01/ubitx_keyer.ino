@@ -1,3 +1,4 @@
+
 /**
  CW Keyer
  CW Key logic change with ron's code (ubitx_keyer.cpp)
@@ -262,108 +263,7 @@ void cwKeyer(void){
 
       Check_Cat(2);
     } //end of while
-  }   //end of elese
+  }   //end of else
 }
-
-
-//=======================================================================================
-//Before logic
-//by Farhan and modified by KD8CEC
-//======================================================================================
-
-/**
- * The keyer handles the straight key as well as the iambic key
- * This module keeps looping until the user stops sending cw
- * if the cwTimeout is set to 0, then it means, we have to exit the keyer loop
- * Each time the key is hit the cwTimeout is pushed to a time in the future by cwKeyDown()
- */
- /*
-void cwKeyer(){
-  byte paddle;
-  lastPaddle = 0;
-
-  while(1){
-    paddle = getPaddle();
-    
-    // do nothing if the paddle has not been touched, unless
-    // we are in the cw mode and we have timed out
-    if (!paddle){
-       //modifed by KD8CEC for auto CW Send
-      if (isCWAutoMode > 1)  //if while auto cw sending, dont stop tx by paddle position
-        return;
-        
-      if (0 < cwTimeout && cwTimeout < millis()){
-        cwTimeout = 0;
-        keyDown = 0;
-        stopTx();
-      }
-
-      if (!cwTimeout)
-        return;
-
-      Check_Cat(2); //for uBITX on Raspberry pi, when straight keying, disconnect / test complete
-      continue;
-    }
-
-    //if while auto cw send, stop auto cw
-    //but isAutoCWHold for Manual Keying with cwAutoSend
-    if (isCWAutoMode > 1 && isAutoCWHold == 0)
-      isCWAutoMode = 1;                         //read status
-
-    //Remoark Debug code / Serial Use by CAT Protocol
-    //Serial.print("paddle:");Serial.println(paddle);
-    // if we are here, it is only because the key or the paddle is pressed
-    if (!inTx){
-      keyDown = 0;
-      //Modified by KD8CEC, for CW Delay Time save to eeprom
-      //cwTimeout = millis() + CW_TIMEOUT;
-      cwTimeout = millis() + cwDelayTime * 10;
-      
-      startTx(TX_CW, 0);  //disable updateDisplay Command for reduce latency time
-      updateDisplay();
-
-      //DelayTime Option
-      delay_background(delayBeforeCWStartTime * 2, 2);
-    }
-    
-    // star the transmission)
-    // we store the transmitted character in the lastPaddle
-    cwKeydown();
-    if (paddle == PADDLE_DOT){
-      //delay(cwSpeed);
-      delay_background(cwSpeed, 3);
-      lastPaddle = PADDLE_DOT;
-    }
-    else if (paddle == PADDLE_DASH){
-      //delay(cwSpeed * 3);
-      delay_background(cwSpeed * 3, 3);
-      lastPaddle = PADDLE_DASH;
-    }
-    else if (paddle == PADDLE_BOTH){ //both paddles down
-      //depending upon what was sent last, send the other 
-      if (lastPaddle == PADDLE_DOT) {
-        //delay(cwSpeed * 3);
-        delay_background(cwSpeed * 3, 3);
-        lastPaddle = PADDLE_DASH;
-      }else{      
-        //delay(cwSpeed);
-        delay_background(cwSpeed, 3);
-        lastPaddle = PADDLE_DOT;
-      }
-    }
-    else if (paddle == PADDLE_STRAIGHT){
-      while (getPaddle() == PADDLE_STRAIGHT) {
-        delay(1);
-        Check_Cat(2);
-      }
-      lastPaddle = PADDLE_STRAIGHT;
-    }
-    cwKeyUp();
-    //introduce a dot long gap between characters if the keyer was used
-    if (lastPaddle != PADDLE_STRAIGHT)
-      delay(cwSpeed);
-  }
-}
-*/
 
 

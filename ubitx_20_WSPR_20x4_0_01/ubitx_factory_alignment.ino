@@ -17,26 +17,30 @@ void factory_alignment(){
   line2DisplayStatus = 1;
 
   if (calibration == 0){
-    printLine2("Setup Aborted");
+    //printLine2("Setup Aborted");
+    printLine(3, "Setup Aborted");
     return;
   }
 
   //move it away to 7.160 for an LSB signal
   setFrequency(7160000l);
   updateDisplay();
-  printLine2("#2 BFO");
+  //printLine2("#2 BFO");
+  printLine(3,"#2 BFO");
   delay(1000);
 
   usbCarrier = 11994999l;
   menuSetupCarrier(1);
 
   if (usbCarrier == 11994999l){
-    printLine2("Setup Aborted");
+    //printLine2("Setup Aborted");
+    printLine(3, "Setup Aborted");
     return;
   }
 
   
-  printLine2("#3:Test 3.5MHz");
+  //printLine2("#3:Test 3.5MHz");
+  printLine(3, "#3:Test 3.5MHz");
   cwMode = 0;
   isUSB = false;
   setFrequency(3500000l);
@@ -49,6 +53,7 @@ void factory_alignment(){
 
   btnWaitForClick();
   printLine2("#4:Test 7MHz");
+  printLine(3, "#4:Test 7MHz");
 
   setFrequency(7150000l);
   updateDisplay();
@@ -58,7 +63,8 @@ void factory_alignment(){
   }
 
   btnWaitForClick();
-  printLine2("#5:Test 14MHz");
+  //printLine2("#5:Test 14MHz");
+  printLine(3, "#5:Test 14MHz");
 
   cwMode = 0;
   isUSB = true;
@@ -70,7 +76,8 @@ void factory_alignment(){
   }
 
   btnWaitForClick();
-  printLine2("#6:Test 28MHz");
+  //printLine2("#6:Test 28MHz");
+  printLine(3, "#6:Test 28MHz");
 
   setFrequency(28000000l);
   updateDisplay();
@@ -80,6 +87,7 @@ void factory_alignment(){
   }
 
   printLine2("Alignment done");
+  printLine(3, "Alignment done");
   delay(1000);
 
   cwMode = 0;

@@ -1,3 +1,21 @@
+uBitx_Teensy v0.01
+
+This is a fork of the v1.061 code written by KD8CEC (kd8cec@gmail.com) (http://www.hamskey.com) for the uBitx hardware.
+
+
+Major changes from KD8CEC's code include swapping out the tired and slow Arduino nano for 
+a Teensy 3.5. This allows further expansion and vastly less memory restraints. Other changes include moving from a 4bit 2x16 LCD display to a 4x20 I2C LCD display. The screen saver (idle time) was disabled for now.
+
+
+
+Planned expansions include SD card support (channels?, messaging?), GPS support (automatic QTH and time keeping (for WSPR etc..), SWR meter, antenna tuner, etc... fell free to add to the code with the expanded memory. 
+
+My personal favorite modification to come is running the uBitx in headless mode (only a on/off switch) and controlled through a raspberry pi with 5" touchscreen. On the Pi will be loaded FLDIGI, WSJTx, etc... now the digital modes are not limited by a small LCD screen and minimal user interaction.
+
+
+
+########################### Original Readme from KD8CEC ################################
+
 #IMPORTANT INFORMATION
 ----------------------------------------------------------------------------
 - Now Release Version 1.061 on my blog (http://www.hamskey.com)
